@@ -45,6 +45,24 @@ pip install -r requirements.txt
 python main.py
 ```
 
+## Gerar executável
+
+Para gerar o executável do Last.Batch:
+
+1. Instale o PyInstaller:
+```bash
+pip install pyinstaller
+```
+
+2. Execute o comando:
+```bash
+pyinstaller --onefile --windowed --name="Last.Batch" --add-data=".env;." main.py
+```
+
+3. O executável estará em `dist/Last.Batch.exe`
+
+**Importante**: O arquivo `.env` deve estar na mesma pasta do executável para funcionar corretamente.
+
 ## Formato do arquivo de entrada
 
 O arquivo deve ser um CSV com o seguinte formato:
