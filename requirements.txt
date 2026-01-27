@@ -1,0 +1,2 @@
+pylast==7.0.2
+python-dotenv==1.1.0
