@@ -3,10 +3,10 @@
 
 a = Analysis(
     ['src/main.py'],
-    pathex=[],
+    pathex=['src'],
     binaries=[],
-    datas=[('.env', '.')],
-    hiddenimports=[],
+    datas=[('.env', '.'), ('src/i18n/locales/*.json', 'i18n/locales')],
+    hiddenimports=['lastfm', 'configs', 'file', 'ui.about_dialog', 'ui.settings_dialog', 'i18n.translator'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

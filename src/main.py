@@ -65,7 +65,7 @@ def send_scrobbles():
             try:
                 title_info.config(text=translator.t("messages.track_info", artist=stream["artist"], track=stream["track"]))
                 time.sleep(1.0)
-                # lastfm.network.scrobble(artist=stream["artist"], title=stream["track"], timestamp=unix_timestamp)
+                lastfm.network.scrobble(artist=stream["artist"], title=stream["track"], timestamp=unix_timestamp)
                 progress['value'] = counter
                 top.update()
             except pylast.WSError:

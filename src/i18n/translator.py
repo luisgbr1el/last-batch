@@ -1,8 +1,15 @@
 import json
 import os
+import sys
 from typing import Dict
 
-LOCALES_DIR = os.path.join(os.path.dirname(__file__), "locales")
+def get_base_path():
+    if getattr(sys, 'frozen', False):
+        return sys._MEIPASS
+    else:
+        return os.path.dirname(__file__)
+
+LOCALES_DIR = os.path.join(get_base_path(), "i18n", "locales")
 current_locale = "en"
 translations: Dict[str, any] = {}
 
