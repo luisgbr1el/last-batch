@@ -1,11 +1,7 @@
 import os
 import json
-from dotenv import load_dotenv
-
-load_dotenv()
 
 CONFIG_FILE = os.path.join(os.path.expanduser("~"), ".lastbatch_config.json")
-network = None
 
 def load():
     if not os.path.exists(CONFIG_FILE):
