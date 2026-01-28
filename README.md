@@ -1,113 +1,57 @@
 # Last.Batch
 
-Aplicação desktop para envio em lote de scrobbles para o Last.fm. Permite processar arquivos CSV com históricos de reprodução e enviá-los para sua conta do Last.fm de forma automatizada.
+Desktop application for batch scrobbling to Last.fm. Process CSV files with playback history and send them to your Last.fm account.
 
-## Funcionalidades
+## Features
 
-- **Autenticação com Last.fm**: Integração direta com a API do Last.fm
-- **Processamento em Lote**: Carregue arquivos CSV, TXT ou JSON com histórico de reprodução
-- **Visualização de Dados**: Prévia dos scrobbles antes do envio
-- **Remoção Seletiva**: Remova itens individuais da lista antes de enviar
-- **Progresso em Tempo Real**: Acompanhe o envio dos scrobbles com barra de progresso
-- **Gerenciamento de Sessão**: Mantenha-se autenticado entre sessões
+- Last.fm authentication
+- Batch processing (CSV, TXT, JSON)
+- Preview and edit scrobbles before sending
+- Real-time progress tracking
+- Multi-language support (English, Português)
 
-## Requisitos
+## Setup
 
-- Python 3.7 ou superior
-- Conta no Last.fm
-- API Key e API Secret do Last.fm
+1. Get Last.fm API credentials at [https://www.last.fm/api/account/create](https://www.last.fm/api/account/create)
 
-## Configuração
-
-### 1. Obter credenciais do Last.fm
-
-1. Acesse [https://www.last.fm/api/account/create](https://www.last.fm/api/account/create)
-2. Crie uma aplicação e obtenha sua **API Key** e **API Secret**
-
-### 2. Configurar variáveis de ambiente
-
-Crie um arquivo `.env` na raiz do projeto:
-
+2. Create a `.env` file:
 ```env
-API_KEY=sua_api_key_aqui
-API_SECRET=seu_api_secret_aqui
+API_KEY=your_api_key_here
+API_SECRET=your_api_secret_here
 ```
 
-### 3. Instalar dependências
-
+3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-## Executar localmente
+4. Run:
+```bash
+python src/main.py
+```
+
+## File formats
+
+- **.csv** with 3 columns: Artist, Track, Timestamp
+
+    ```csv
+    The Beatles,Yesterday,2024-01-01 12:00:00
+    Pink Floyd,Wish You Were Here,2024-01-01 13:30:00
+    ```
+
+## Usage
+
+1. Authenticate with Last.fm
+2. Upload your file
+3. Review scrobbles (press Delete to remove items)
+4. Click Scrobble
+
+## Build executable
 
 ```bash
-python main.py
+pyinstaller Last.Batch.spec
 ```
 
-## Gerar executável
+## Author
 
-Para gerar o executável do Last.Batch:
-
-1. Instale o PyInstaller:
-```bash
-pip install pyinstaller
-```
-
-2. Execute o comando:
-```bash
-pyinstaller --onefile --windowed --name="Last.Batch" --add-data=".env;." main.py
-```
-
-3. O executável estará em `dist/Last.Batch.exe`
-
-**Importante**: O arquivo `.env` deve estar na mesma pasta do executável para funcionar corretamente.
-
-## Formato do arquivo de entrada
-
-O arquivo deve ser um CSV com o seguinte formato:
-
-```
-Artista,Música,Timestamp
-The Beatles,Yesterday,2024-01-01 12:00:00
-Pink Floyd,Wish You Were Here,2024-01-01 13:30:00
-```
-
-**Estrutura esperada:**
-- Coluna 1: Nome do artista
-- Coluna 2: Nome da música
-- Coluna 3: Timestamp (qualquer formato, será convertido para timestamp Unix atual)
-
-## Como usar
-
-1. Execute a aplicação
-2. Clique em **Autenticar-se** para conectar sua conta do Last.fm
-3. Clique em **Enviar arquivo** e selecione seu arquivo CSV/TXT/JSON
-4. Revise a lista de scrobbles carregados
-5. (Opcional) Remova itens indesejados selecionando-os e pressionando **Delete**
-6. Clique em **Scrobblar** para enviar os dados para o Last.fm
-
-## Estrutura do projeto
-
-```
-last-batch/
-├── main.py           # Interface gráfica e lógica principal
-├── auth.py           # Autenticação com Last.fm
-├── requirements.txt  # Dependências do projeto
-├── .env              # Variáveis de ambiente (não versionado)
-└── README.md         # Este arquivo
-```
-
-## Tecnologias utilizadas
-
-- **Tkinter**: Interface gráfica
-- **pylast**: Biblioteca para API do Last.fm
-- **python-dotenv**: Gerenciamento de variáveis de ambiente
-
-## Autor
-
-Desenvolvido por [luisgbr1el](https://github.com/luisgbr1el)
-
-## Licença
-
-Este projeto é de código aberto e está disponível para uso pessoal.
+Developed by [luisgbr1el](https://github.com/luisgbr1el)
