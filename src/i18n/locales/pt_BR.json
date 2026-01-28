@@ -1,0 +1,33 @@
+{
+    "settings": {
+        "title": "Configurações",
+        "language": "Idioma",
+        "version": "Versão"
+    },
+    "options": {
+        "save": "Salvar",
+        "logout": "Sair da conta",
+        "login": "Autenticar-se",
+        "quit": "Fechar",
+        "help": "Ajuda",
+        "about": "Sobre",
+        "send_file": "Enviar arquivo",
+        "scrobble": "Scrobblar"
+    },
+    "messages": {
+        "restart_required": "O aplicativo será reiniciado para aplicar as mudanças.",
+        "developer": "Desenvolvido por luisgbr1el",
+        "send_file": "Envie um arquivo para processar.",
+        "no_file": "Nenhum arquivo carregado",
+        "streams_read": "Stream lidos: {count}",
+        "how_to_remove_stream": "Obs: Para remover um stream, selecione um elemento e pressione o botão Delete.",
+        "scrobble_items": "Scrobblar {count} itens?",
+        "scrobbling": "Scrobblando...",
+        "track_info": "Música: {artist} - {track}",
+        "success": "Sucesso!",
+        "error": "Erro!",
+        "error_scrobbling": "Erro ao scrobblar. Tente novamente mais tarde.",
+        "success_scrobbling": "Todos os scrobbles foram enviados com sucesso!",
+        "not_logged": "Você não está autenticado no Last.fm!"
+    }
+}

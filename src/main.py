@@ -7,6 +7,9 @@ import pylast
 from ui import about_dialog, settings_dialog
 import file
 import configs
+from i18n import translator
+
+translator.load_locale(configs.get("language"))
 
 defaultBg = "#212120"
 root = tk.Tk(screenName="main", baseName="main", className="main")
@@ -37,13 +40,13 @@ def on_disconnect():
 
 def send_scrobbles():
     global streams
-    confirm = messagebox.askokcancel("Enviar scrobbles", f"Deseja scrobblar {len(streams)} itens?")
+    confirm = messagebox.askokcancel(translator.t("options.scrobble"), translator.t("messages.scrobble_items", count=len(streams)))
 
     if confirm:
         top = Toplevel(bg=defaultBg)
-        top.title('Scrobblando...')
+        top.title(translator.t("messages.scrobbling"))
 
-        label = tk.Label(top, text="Scrobblando...", bg=defaultBg, fg="white", font=("Arial", 10))
+        label = tk.Label(top, text=translator.t("messages.scrobbling"), bg=defaultBg, fg="white", font=("Arial", 10))
         label.pack(pady=5)
         
         progress = ttk.Progressbar(top, orient="horizontal", length=300, mode="determinate", maximum=len(streams))
@@ -60,19 +63,20 @@ def send_scrobbles():
             unix_timestamp = int(time.mktime(datetime.now().timetuple()))
                 
             try:
-                title_info.config(text=f"Música: {stream["artist"]} - {stream["track"]}")
+                title_info.config(text=translator.t("messages.track_info", artist=stream["artist"], track=stream["track"]))
+                time.sleep(1.0)
                 # lastfm.network.scrobble(artist=stream["artist"], title=stream["track"], timestamp=unix_timestamp)
                 progress['value'] = counter
                 top.update()
             except pylast.WSError:
-                messagebox.showerror("Erro", "Erro ao scrobblar. Tente novamente mais tarde.")
+                messagebox.showerror(translator.t("messages.error"), translator.t("messages.error_scrobbling"))
 
         streams_listbox.delete(first=0, last=tk.END)
         streams = []
         send_scrobbles_button.config(state="disabled")
-        streams_label.config(text="Nenhum arquivo carregado")
+        streams_label.config(text=translator.t("messages.no_file"))
         top.destroy()
-        messagebox.showinfo("Sucesso", "Todos os scrobbles foram enviados com sucesso!") 
+        messagebox.showinfo(translator.t("messages.success"), translator.t("messages.success_scrobbling")) 
     else:
         return
 
@@ -84,14 +88,17 @@ def upload_file():
         process_streams()
 
 def remove_selected():
+    global streams
     selection = streams_listbox.curselection()
     if selection:
-        streams_listbox.delete(selection[0])
-        linesNumber = streams_listbox.size()
-        streams_label.config(text=f"Streams lidos: {linesNumber}")
+        index = selection[0]
+        streams.pop(index)
+        streams_listbox.delete(index)
+        streams_label.config(text=translator.t("messages.streams_read", count=len(streams)))
+        send_scrobbles_button.config(state="normal" if len(streams) > 0 else "disabled")
 
 def process_streams():
-    streams_label.config(text=f"Streams lidos: {len(streams)}")
+    streams_label.config(text=translator.t("messages.streams_read", count=len(streams)))
     
     streams_listbox.delete(0, tk.END)
     
@@ -115,10 +122,10 @@ def refresh():
     global menu
 
     if not lastfm.is_authenticated():
-        label = tk.Label(root, text="Você não está autenticado no Last.fm!", bg=defaultBg, fg="white", font=("Arial", 10))
+        label = tk.Label(root, text=translator.t("messages.not_logged"), bg=defaultBg, fg="white", font=("Arial", 10))
         label.pack(pady=10, padx=10)
 
-        button = tk.Button(root, text="Autenticar-se", command=on_authenticate, width=25, bg=defaultBg, fg="white")
+        button = tk.Button(root, text=translator.t("options.login"), command=on_authenticate, width=25, bg=defaultBg, fg="white")
         button.pack()
     else:
         if lastfm.network is None:
@@ -133,22 +140,22 @@ def refresh():
 
         main_menu = tk.Menu(menu, tearoff=0)
         menu.add_cascade(label="Last.Batch", menu=main_menu)
-        main_menu.add_command(label="Configurações", command=settings_dialog.open)
-        main_menu.add_command(label="Sair da conta", command=on_disconnect)
+        main_menu.add_command(label=translator.t("settings.title"), command=lambda: settings_dialog.open(root))
+        main_menu.add_command(label=translator.t("options.logout"), command=on_disconnect)
         main_menu.add_separator()
-        main_menu.add_command(label="Fechar", command=root.quit)
+        main_menu.add_command(label=translator.t("options.quit"), command=root.quit)
 
         help_menu = tk.Menu(menu, tearoff=0)
-        menu.add_cascade(label="Ajuda", menu=help_menu)
-        help_menu.add_command(label="Sobre", command=about_dialog.open)
+        menu.add_cascade(label=translator.t("options.help"), menu=help_menu)
+        help_menu.add_command(label=translator.t("options.about"), command=about_dialog.open)
 
-        send_file_label = tk.Label(root, text="Envie um arquivo abaixo para processar.", bg=defaultBg, fg="white", font=("Arial", 10, "bold"))
+        send_file_label = tk.Label(root, text=translator.t("messages.send_file"), bg=defaultBg, fg="white", font=("Arial", 10, "bold"))
         send_file_label.pack(pady=10)
 
-        button = tk.Button(root, text="Enviar arquivo", command=upload_file, width=25, bg=defaultBg, fg="white")
+        button = tk.Button(root, text=translator.t("options.send_file"), command=upload_file, width=25, bg=defaultBg, fg="white")
         button.pack()
        
-        streams_label = tk.Label(root, text="Nenhum arquivo carregado", bg=defaultBg, fg="white", font=("Arial", 10))
+        streams_label = tk.Label(root, text=translator.t("messages.no_file"), bg=defaultBg, fg="white", font=("Arial", 10))
         streams_label.pack(pady=5)
 
         frame = tk.Frame(root, bg=defaultBg)
@@ -162,10 +169,10 @@ def refresh():
         
         scrollbar.config(command=streams_listbox.yview)
 
-        label = tk.Label(root, text="Obs: Para remover um stream, selecione um elemento e pressione o botão Delete.", bg=defaultBg, fg="white", font=("Arial", 8, "bold"))
+        label = tk.Label(root, text=translator.t("messages.how_to_remove_stream"), bg=defaultBg, fg="white", font=("Arial", 8, "bold"))
         label.pack(pady=5)
 
-        send_scrobbles_button = tk.Button(root, text="Scrobblar", command=send_scrobbles, width=25, bg=defaultBg, fg="white")
+        send_scrobbles_button = tk.Button(root, text=translator.t("options.scrobble"), command=send_scrobbles, width=25, bg=defaultBg, fg="white")
         send_scrobbles_button.config(state="disabled")
         send_scrobbles_button.pack()
 
