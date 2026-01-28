@@ -7,7 +7,7 @@ Download the [latest release](https://github.com/luisgbr1el/last-batch/releases)
 ## Features
 
 - Last.fm authentication
-- Batch processing (CSV, TXT, JSON)
+- Batch processing
 - Preview and edit scrobbles before sending
 - Real-time progress tracking
 - Multi-language support (English, Português)
