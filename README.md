@@ -37,8 +37,8 @@ python src/main.py
 - **.csv** with 3 columns: Artist, Track, Timestamp
 
     ```csv
-    The Beatles,Yesterday,2024-01-01 12:00:00
-    Pink Floyd,Wish You Were Here,2024-01-01 13:30:00
+    Kendrick Lamar,Not Like Us,2026-01-01 12:00:00
+    Twenty One Pilots,City Walls,2026-01-01 13:30:00
     ```
 
 ## Usage
