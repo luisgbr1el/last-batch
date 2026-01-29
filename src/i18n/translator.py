@@ -5,32 +5,51 @@ from typing import Dict
 
 def get_base_path():
     if getattr(sys, 'frozen', False):
-        return sys._MEIPASS
+        base_path = sys._MEIPASS
     else:
-        return os.path.dirname(__file__)
+        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    return base_path
 
 LOCALES_DIR = os.path.join(get_base_path(), "i18n", "locales")
 current_locale = "en"
 translations: Dict[str, any] = {}
 
+def _load_json_file(locale_code: str) -> Dict:
+    locale_file = os.path.join(LOCALES_DIR, f"{locale_code}.json")
+    if os.path.exists(locale_file):
+        with open(locale_file, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
 def load_locale(locale: str):
     if locale == "English":
-        locale = "en"
+        locale_code = "en"
+    elif locale == "Português (Brasil)":
+        locale_code = "pt_BR"
+    elif locale is None:
+        locale_code = "en"
     else:
-        locale = "pt_BR"
+        locale_code = locale if locale in ["en", "pt_BR"] else "en"
         
     global current_locale, translations
     
-    locale_file = os.path.join(LOCALES_DIR, f"{locale}.json")
-    
-    if not os.path.exists(locale_file):
-        locale = "en"
-        locale_file = os.path.join(LOCALES_DIR, f"{locale}.json")
-    
-    with open(locale_file, "r", encoding="utf-8") as f:
-        translations = json.load(f)
-    
-    current_locale = locale
+    try:
+        loaded_translations = _load_json_file(locale_code)
+        
+        if loaded_translations:
+            translations = loaded_translations
+            current_locale = locale_code
+        else:
+            translations = _load_json_file("en")
+            current_locale = "en"
+            
+    except Exception:
+        try:
+            translations = _load_json_file("en")
+            current_locale = "en"
+        except:
+            translations = {}
+            current_locale = "en"
 
 def t(key: str, **kwargs) -> str:
     keys = key.split(".")
@@ -51,7 +70,16 @@ def get_current_locale() -> str:
 
 def get_available_locales() -> list:
     locales = []
-    for file in os.listdir(LOCALES_DIR):
-        if file.endswith(".json"):
-            locales.append(file.replace(".json", ""))
+    try:
+        if os.path.exists(LOCALES_DIR):
+            for file in os.listdir(LOCALES_DIR):
+                if file.endswith(".json"):
+                    locales.append(file.replace(".json", ""))
+    except Exception:
+        pass
     return locales
+
+try:
+    translations = _load_json_file("en")
+except:
+    translations = {}

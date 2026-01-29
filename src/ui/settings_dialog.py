@@ -1,11 +1,11 @@
 import tkinter as tk
-from tkinter import Toplevel, ttk, messagebox
+from tkinter import Toplevel, ttk
 from i18n import translator
 import configs
 
 defaultBg = "#212120"
 
-def open(root=None):
+def open(root=None, refresh_callback=None):
     top = Toplevel(bg=defaultBg)
     top.title(translator.t("settings.title"))
     top.resizable(False, False)
@@ -20,7 +20,10 @@ def open(root=None):
     lang_combo_box = ttk.Combobox(top, values=["English", "Português (Brasil)"], state="readonly")
     lang_combo_box.pack(fill="x")
 
-    lang_combo_box.set(configs.get(name="language"))
+    current_lang = configs.get(name="language")
+    if current_lang is None or current_lang == "":
+        current_lang = "English"
+    lang_combo_box.set(current_lang)
 
     def save_and_reload():
         newLanguage = lang_combo_box.get()
@@ -30,18 +33,10 @@ def open(root=None):
             configs.save(name="language", value=newLanguage)
             translator.load_locale(newLanguage)
             
-            messagebox.showinfo(
-                translator.t("settings.title"), 
-                translator.t("messages.restart_required")
-            )
-            
             top.destroy()
             
-            if root:
-                root.destroy()
-                import subprocess
-                import sys
-                subprocess.Popen([sys.executable] + sys.argv)
+            if refresh_callback:
+                refresh_callback()
         else:
             top.destroy()
 
