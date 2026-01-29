@@ -5,7 +5,7 @@ CONFIG_FILE = os.path.join(os.path.expanduser("~"), ".lastbatch_config.json")
 
 def load():
     if not os.path.exists(CONFIG_FILE):
-        return {"session_key": None, "language": "English"}
+        return {"session_key": None, "language": "English", "file_format": ".csv"}
     
     try:
         with open(CONFIG_FILE, "r", encoding="utf-8") as f:
@@ -15,10 +15,12 @@ def load():
                 configs["language"] = "English"
             if "session_key" not in configs:
                 configs["session_key"] = None
+            if "file_format" not in configs:
+                configs["file_format"] = ".csv"
 
             return configs
     except:
-        return {"session_key": None, "language": "English"}
+        return {"session_key": None, "language": "English", "file_format": ".csv"}
 
 def save(name: str, value: str | None):
     configs = load()
