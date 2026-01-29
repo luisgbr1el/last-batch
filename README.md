@@ -2,7 +2,7 @@
 
 Desktop application for batch scrobbling to Last.fm. Process files with playback history and send them to your Last.fm account.
 
-Download the [latest release](https://github.com/luisgbr1el/last-batch/releases).
+Download the [latest release](https://github.com/luisgbr1el/last-batch/releases/latest).
 
 ## Features
 
