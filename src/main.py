@@ -22,20 +22,10 @@ root.resizable(False, False)
 
 def on_authenticate():
     lastfm.authenticate()
-    label.destroy()
-    button.destroy()
     refresh()
 
 def on_disconnect():
     lastfm.disconnect()
-    label.destroy()
-    button.destroy()
-    streams_label.destroy()
-    frame.destroy()
-    send_scrobbles_button.destroy()
-    send_file_label.destroy()
-    menu.destroy()
-
     refresh()
 
 def send_scrobbles():
@@ -121,6 +111,9 @@ def refresh():
     global frame
     global menu
 
+    for widget in root.winfo_children():
+        widget.destroy()
+
     if not lastfm.is_authenticated():
         label = tk.Label(root, text=translator.t("messages.not_logged"), bg=defaultBg, fg="white", font=("Arial", 10))
         label.pack(pady=10, padx=10)
@@ -140,7 +133,7 @@ def refresh():
 
         main_menu = tk.Menu(menu, tearoff=0)
         menu.add_cascade(label="Last.Batch", menu=main_menu)
-        main_menu.add_command(label=translator.t("settings.title"), command=lambda: settings_dialog.open(root))
+        main_menu.add_command(label=translator.t("settings.title"), command=lambda: settings_dialog.open(root, refresh))
         main_menu.add_command(label=translator.t("options.logout"), command=on_disconnect)
         main_menu.add_separator()
         main_menu.add_command(label=translator.t("options.quit"), command=root.quit)

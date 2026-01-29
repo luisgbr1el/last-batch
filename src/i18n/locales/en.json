@@ -15,7 +15,6 @@
         "scrobble": "Scrobble"
     },
     "messages": {
-        "restart_required": "The application will restart to apply the changes.",
         "developer": "Developed by luisgbr1el",
         "send_file": "Send a file to be processed.",
         "no_file": "No file uploaded",

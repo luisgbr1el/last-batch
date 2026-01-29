@@ -15,7 +15,6 @@
         "scrobble": "Scrobblar"
     },
     "messages": {
-        "restart_required": "O aplicativo será reiniciado para aplicar as mudanças.",
         "developer": "Desenvolvido por luisgbr1el",
         "send_file": "Envie um arquivo para processar.",
         "no_file": "Nenhum arquivo carregado",
