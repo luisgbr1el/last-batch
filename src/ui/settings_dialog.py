@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import Toplevel, ttk, messagebox
 from i18n import translator
 import configs
+import sys
 
 defaultBg = "#212120"
 
@@ -30,18 +31,27 @@ def open(root=None):
             configs.save(name="language", value=newLanguage)
             translator.load_locale(newLanguage)
             
-            messagebox.showinfo(
-                translator.t("settings.title"), 
-                translator.t("messages.restart_required")
-            )
-            
-            top.destroy()
-            
-            if root:
-                root.destroy()
-                import subprocess
-                import sys
-                subprocess.Popen([sys.executable] + sys.argv)
+            # Check if running as frozen executable (PyInstaller)
+            if getattr(sys, 'frozen', False):
+                # For frozen executables, just close the app and ask user to restart manually
+                messagebox.showinfo(
+                    translator.t("settings.title"), 
+                    translator.t("messages.restart_required")
+                )
+                top.destroy()
+                if root:
+                    root.quit()
+            else:
+                # For normal Python execution, try to restart
+                messagebox.showinfo(
+                    translator.t("settings.title"), 
+                    translator.t("messages.restart_required")
+                )
+                top.destroy()
+                if root:
+                    root.destroy()
+                    import subprocess
+                    subprocess.Popen([sys.executable] + sys.argv)
         else:
             top.destroy()
 
