@@ -2,8 +2,7 @@
     "settings": {
         "title": "Configurações",
         "language": "Idioma",
-        "version": "Versão",
-        "file_format": "Formato do arquivo de processamento"
+        "version": "Versão"
     },
     "options": {
         "save": "Salvar",
@@ -28,7 +27,6 @@
         "error": "Erro!",
         "error_scrobbling": "Erro ao scrobblar. Tente novamente mais tarde.",
         "success_scrobbling": "Todos os scrobbles foram enviados com sucesso!",
-        "not_logged": "Você não está autenticado no Last.fm!",
-        "playback_history": "Histórico de reprodução"
+        "not_logged": "Você não está autenticado no Last.fm!"
     }
 }

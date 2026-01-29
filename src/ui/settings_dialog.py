@@ -20,27 +20,14 @@ def open(root=None, refresh_callback=None):
     lang_combo_box = ttk.Combobox(top, values=["English", "Português (Brasil)"], state="readonly")
     lang_combo_box.pack(fill="x")
 
-    label = tk.Label(top, text=translator.t("settings.file_format"), bg=defaultBg, fg="white", font=("Arial", 10), anchor="w")
-    label.pack(fill="x")
-
-    file_format_combo_box = ttk.Combobox(top, values=[".csv", ".json", ".txt"], state="readonly")
-    file_format_combo_box.pack(fill="x")
-
     current_lang = configs.get(name="language")
     if current_lang is None or current_lang == "":
         current_lang = "English"
     lang_combo_box.set(current_lang)
 
-    current_file_format = configs.get(name="file_format")
-    if current_file_format is None or current_file_format == "":
-        current_file_format = ".csv"
-    file_format_combo_box.set(current_file_format)
-
     def save_and_reload():
         newLanguage = lang_combo_box.get()
         oldLanguage = configs.get(name="language")
-        newFileFormat = file_format_combo_box.get()
-        oldFileFormat = configs.get(name="file_format")
         
         if newLanguage != oldLanguage:
             configs.save(name="language", value=newLanguage)
@@ -50,10 +37,6 @@ def open(root=None, refresh_callback=None):
             
             if refresh_callback:
                 refresh_callback()
-        elif newFileFormat != oldFileFormat:
-            configs.save(name="file_format", value=newFileFormat)
-
-            top.destroy()
         else:
             top.destroy()
 
