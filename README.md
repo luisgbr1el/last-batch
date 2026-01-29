@@ -4,6 +4,8 @@ Desktop application for batch scrobbling to Last.fm. Process files with playback
 
 Download the [latest release](https://github.com/luisgbr1el/last-batch/releases/latest).
 
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/75d8ec43-25cd-4491-89d8-b4c97c93b737" />
+
 ## Features
 
 - Last.fm authentication
