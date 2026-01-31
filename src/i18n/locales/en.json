@@ -2,8 +2,7 @@
     "settings": {
         "title": "Settings",
         "language": "Language",
-        "version": "Version",
-        "file_format": "Processing file format"
+        "version": "Version"
     },
     "options": {
         "save": "Save",
