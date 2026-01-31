@@ -25,8 +25,13 @@ def on_authenticate():
     refresh()
 
 def on_disconnect():
-    lastfm.disconnect()
-    refresh()
+    confirm = messagebox.askokcancel(translator.t("options.logout"), translator.t("messages.confirm_logout"))
+    
+    if confirm:
+        lastfm.disconnect()
+        refresh()
+    else:
+        return
 
 def send_scrobbles():
     global streams
