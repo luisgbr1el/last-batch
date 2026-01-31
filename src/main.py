@@ -54,17 +54,20 @@ def send_scrobbles():
 
         for stream in streams:
             counter+= 1
-                
-            unix_timestamp = int(time.mktime(datetime.now().timetuple()))
-                
+
+            timestamp = datetime.strptime(stream['timestamp'], '%Y-%m-%d %H:%M:%S')
+            unix_timestamp = int(time.mktime(timestamp.timetuple()))
+
             try:
                 title_info.config(text=translator.t("messages.track_info", artist=stream["artist"], track=stream["track"]))
-                time.sleep(1.0)
+                time.sleep(0.5)
                 lastfm.network.scrobble(artist=stream["artist"], title=stream["track"], timestamp=unix_timestamp)
                 progress['value'] = counter
                 top.update()
             except pylast.WSError:
                 messagebox.showerror(translator.t("messages.error"), translator.t("messages.error_scrobbling"))
+                top.destroy()
+                return
 
         streams_listbox.delete(first=0, last=tk.END)
         streams = []
