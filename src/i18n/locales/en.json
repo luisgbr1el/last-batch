@@ -2,7 +2,8 @@
     "settings": {
         "title": "Settings",
         "language": "Language",
-        "version": "Version"
+        "version": "Version",
+        "file_format": "Processing file format"
     },
     "options": {
         "save": "Save",
@@ -27,6 +28,7 @@
         "error": "Error!",
         "error_scrobbling": "Error while scrobbling. Try again later.",
         "success_scrobbling": "All scrobbles were sent successfully!",
-        "not_logged": "You're not authenticated with Last.fm!"
+        "not_logged": "You're not authenticated with Last.fm!",
+        "playback_history": "Playback history"
     }
 }
