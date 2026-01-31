@@ -42,28 +42,7 @@ python src/main.py
     Kendrick Lamar,Not Like Us,2026-01-01 12:00:00
     Twenty One Pilots,City Walls,2026-01-01 13:30:00
     ```
-- **.txt** with 3 columns: Artist, Track, Timestamp
 
-    ```txt
-    Kendrick Lamar;Not Like Us;2026-01-01 12:00:00
-    Twenty One Pilots;City Walls;2026-01-01 13:30:00
-    ```
-- **.json** with an array of objects:
-
-    ```json
-    [
-        {
-            "artist": "Kendrick Lamar",
-            "track": "Not Like Us",
-            "timestamp": "2026-01-01 12:00:00"
-        },
-        {
-            "artist": "Twenty One Pilots",
-            "track": "City Walls",
-            "timestamp": "2026-01-01 13:30:00"
-        }
-    ]
-    ```
 ## Usage
 
 1. Authenticate with Last.fm
