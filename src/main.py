@@ -25,9 +25,9 @@ def on_authenticate():
     refresh()
 
 def on_disconnect():
-    confirm = messagebox.askokcancel(translator.t("options.logout"), translator.t("messages.confirm_logout"))
+    confirm = messagebox.askyesno(translator.t("options.logout"), translator.t("messages.confirm_logout"))
     
-    if confirm:
+    if confirm == True:
         lastfm.disconnect()
         refresh()
     else:
@@ -35,9 +35,9 @@ def on_disconnect():
 
 def send_scrobbles():
     global streams
-    confirm = messagebox.askokcancel(translator.t("options.scrobble"), translator.t("messages.scrobble_items", count=len(streams)))
+    confirm = messagebox.askyesno(translator.t("options.scrobble"), translator.t("messages.scrobble_items", count=len(streams)))
 
-    if confirm:
+    if confirm == True:
         top = Toplevel(bg=defaultBg)
         top.title(translator.t("messages.scrobbling"))
 
