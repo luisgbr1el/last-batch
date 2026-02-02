@@ -3,7 +3,7 @@ import webbrowser
 from i18n import translator
 
 defaultBg = "#212120"
-version = "1.0.0"
+version = "1.1.0"
 
 def open():
     top = ttk.Toplevel(bg=defaultBg)
