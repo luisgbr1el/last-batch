@@ -51,8 +51,10 @@ def send_scrobbles():
         title_info.pack(pady=5, padx=10)
             
         counter = 0
+        successful_indices = []
+        failed_count = 0
 
-        for stream in streams:
+        for i, stream in enumerate(streams):
             counter+= 1
 
             timestamp = datetime.strptime(stream['timestamp'], '%Y-%m-%d %H:%M:%S')
@@ -62,19 +64,30 @@ def send_scrobbles():
                 title_info.config(text=translator.t("messages.track_info", artist=stream["artist"], track=stream["track"]))
                 time.sleep(0.5)
                 lastfm.network.scrobble(artist=stream["artist"], title=stream["track"], timestamp=unix_timestamp)
+                successful_indices.append(i)
                 progress['value'] = counter
                 top.update()
             except pylast.WSError:
-                messagebox.showerror(translator.t("messages.error"), translator.t("messages.error_scrobbling"))
-                top.destroy()
-                return
+                failed_count += 1
+                progress['value'] = counter
+                top.update()
 
-        streams_listbox.delete(first=0, last=tk.END)
-        streams = []
-        send_scrobbles_button.config(state="disabled")
-        streams_label.config(text=translator.t("messages.no_file"))
+        for index in reversed(successful_indices):
+            streams.pop(index)
+
+        if len(streams) > 0:
+            process_streams()
+        else:
+            streams_listbox.delete(0, tk.END)
+            streams_label.config(text=translator.t("messages.no_file"))
+            send_scrobbles_button.config(state="disabled")
+
         top.destroy()
-        messagebox.showinfo(translator.t("messages.success"), translator.t("messages.success_scrobbling")) 
+
+        if failed_count > 0:
+            messagebox.showwarning(translator.t("messages.error"), translator.t("messages.success_with_errors", count=failed_count))
+        if len(successful_indices) > 0:
+            messagebox.showinfo(translator.t("messages.success"), translator.t("messages.success_scrobbling"))
     else:
         return
 
