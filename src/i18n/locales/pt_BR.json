@@ -30,6 +30,7 @@
         "success_scrobbling": "Todos os scrobbles foram enviados com sucesso!",
         "not_logged": "Você não está autenticado no Last.fm!",
         "playback_history": "Histórico de reprodução",
-        "confirm_logout": "Sair da conta do Last.fm?"
+        "confirm_logout": "Sair da conta do Last.fm?",
+        "success_with_errors": "{count} stream(s) falharam. Os streams restantes permanecem na lista."
     }
 }
