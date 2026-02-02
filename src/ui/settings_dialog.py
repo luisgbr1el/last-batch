@@ -1,26 +1,24 @@
-import tkinter as tk
-from tkinter import Toplevel, ttk
+import ttkbootstrap as ttk
 from i18n import translator
 import configs
 
 defaultBg = "#212120"
 
 def open(root=None, refresh_callback=None):
-    top = Toplevel(bg=defaultBg)
+    top = ttk.Toplevel()
     top.title(translator.t("settings.title"))
     top.resizable(False, False)
-    top.config(padx=10, pady=10)
+    top.config(padx=10, pady=10, bg=defaultBg)
     top.grab_set()
     top.transient()
-    top.focus_set()
 
-    label = tk.Label(top, text=translator.t("settings.language"), bg=defaultBg, fg="white", font=("Arial", 10), anchor="w")
+    label = ttk.Label(top, text=translator.t("settings.language"), background=defaultBg, foreground="white", font=("Arial", 10), anchor="w")
     label.pack(fill="x")
 
     lang_combo_box = ttk.Combobox(top, values=["English", "Português (Brasil)"], state="readonly")
     lang_combo_box.pack(fill="x")
 
-    label = tk.Label(top, text=translator.t("settings.file_format"), bg=defaultBg, fg="white", font=("Arial", 10), anchor="w")
+    label = ttk.Label(top, text=translator.t("settings.file_format"), background=defaultBg, foreground="white", font=("Arial", 10), anchor="w")
     label.pack(fill="x")
 
     file_format_combo_box = ttk.Combobox(top, values=[".csv", ".json", ".txt"], state="readonly")
@@ -57,5 +55,5 @@ def open(root=None, refresh_callback=None):
         else:
             top.destroy()
 
-    button = tk.Button(top, text=translator.t("options.save"), command=save_and_reload, width=25, bg=defaultBg, fg="white")
+    button = ttk.Button(top, text=translator.t("options.save"), command=save_and_reload, width=25)
     button.pack(pady=10)
