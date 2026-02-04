@@ -1,21 +1,20 @@
-import tkinter as tk
-from tkinter import Toplevel
+import ttkbootstrap as ttk
 import webbrowser
 from i18n import translator
 
 defaultBg = "#212120"
-version = "1.0.0"
+version = "1.1.0"
 
 def open():
-    top = Toplevel(bg=defaultBg)
+    top = ttk.Toplevel(bg=defaultBg)
     top.title(translator.t("options.about"))
     top.resizable(False, False)
+    top.config(padx=10, pady=10, bg=defaultBg)
     top.grab_set()
     top.transient()
-    top.focus_set()
 
-    label = tk.Label(top, text=f"{translator.t("settings.version")}: {version}\n{translator.t("messages.developer")}", bg=defaultBg, fg="white", font=("Arial", 10))
+    label = ttk.Label(top, text=f"{translator.t("settings.version")}: {version}\n{translator.t("messages.developer")}", background=defaultBg, foreground="white", font=("Arial", 10))
     label.pack(padx=10, pady=10)
 
-    button = tk.Button(top, text="GitHub", command=lambda: webbrowser.open("https://github.com/luisgbr1el/last-batch"), width=25, bg=defaultBg, fg="white")
+    button = ttk.Button(top, text="GitHub", command=lambda: webbrowser.open("https://github.com/luisgbr1el/last-batch"), width=25)
     button.pack(padx=10, pady=5)

@@ -2,7 +2,9 @@
     "settings": {
         "title": "Configurações",
         "language": "Idioma",
-        "version": "Versão"
+        "version": "Versão",
+        "file_format": "Formato do arquivo de processamento",
+        "update": "Atualizar"
     },
     "options": {
         "save": "Salvar",
@@ -12,7 +14,8 @@
         "help": "Ajuda",
         "about": "Sobre",
         "send_file": "Enviar arquivo",
-        "scrobble": "Scrobblar"
+        "scrobble": "Scrobblar",
+        "check_for_updates": "Procurar atualizações"
     },
     "messages": {
         "developer": "Desenvolvido por luisgbr1el",
@@ -27,6 +30,11 @@
         "error": "Erro!",
         "error_scrobbling": "Erro ao scrobblar. Tente novamente mais tarde.",
         "success_scrobbling": "Todos os scrobbles foram enviados com sucesso!",
-        "not_logged": "Você não está autenticado no Last.fm!"
+        "not_logged": "Você não está autenticado no Last.fm!",
+        "playback_history": "Histórico de reprodução",
+        "confirm_logout": "Sair da conta do Last.fm?",
+        "success_with_errors": "{count} stream(s) falharam. Os streams restantes permanecem na lista.",
+        "update_available": "Atualização disponível! Baixar a nova versão?",
+        "no_updates": "Nenhuma atualização disponível! Essa é a última versão."
     }
 }

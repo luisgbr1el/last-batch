@@ -4,7 +4,7 @@ Desktop application for batch scrobbling to Last.fm. Process files with playback
 
 Download the [latest release](https://github.com/luisgbr1el/last-batch/releases/latest).
 
-<img width="400" alt="image" src="https://github.com/user-attachments/assets/75d8ec43-25cd-4491-89d8-b4c97c93b737" />
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/d3a44b86-6bdb-4530-8846-0802b047d552" />
 
 ## Features
 
@@ -42,7 +42,28 @@ python src/main.py
     Kendrick Lamar,Not Like Us,2026-01-01 12:00:00
     Twenty One Pilots,City Walls,2026-01-01 13:30:00
     ```
+- **.txt** with 3 columns: Artist, Track, Timestamp
 
+    ```txt
+    Kendrick Lamar;Not Like Us;2026-01-01 12:00:00
+    Twenty One Pilots;City Walls;2026-01-01 13:30:00
+    ```
+- **.json** with an array of objects:
+
+    ```json
+    [
+        {
+            "artist": "Kendrick Lamar",
+            "track": "Not Like Us",
+            "timestamp": "2026-01-01 12:00:00"
+        },
+        {
+            "artist": "Twenty One Pilots",
+            "track": "City Walls",
+            "timestamp": "2026-01-01 13:30:00"
+        }
+    ]
+    ```
 ## Usage
 
 1. Authenticate with Last.fm

@@ -1,18 +1,22 @@
 from datetime import datetime
 import time
 import tkinter as tk
-from tkinter import messagebox, Toplevel, ttk
+from tkinter import messagebox
+import ttkbootstrap as ttk
 import lastfm
 import pylast
 from ui import about_dialog, settings_dialog
 import file
 import configs
 from i18n import translator
+import requests
+import webbrowser
 
 translator.load_locale(configs.get("language"))
 
 defaultBg = "#212120"
 root = tk.Tk(screenName="main", baseName="main", className="main")
+ttk.Style("darkly")
 root.title("Last.Batch")
 # width = root.winfo_screenwidth() 
 # height = root.winfo_screenheight()
@@ -25,48 +29,69 @@ def on_authenticate():
     refresh()
 
 def on_disconnect():
-    lastfm.disconnect()
-    refresh()
+    confirm = messagebox.askyesno(translator.t("options.logout"), translator.t("messages.confirm_logout"))
+    
+    if confirm == True:
+        lastfm.disconnect()
+        refresh()
+    else:
+        return
 
 def send_scrobbles():
     global streams
-    confirm = messagebox.askokcancel(translator.t("options.scrobble"), translator.t("messages.scrobble_items", count=len(streams)))
+    confirm = messagebox.askyesno(translator.t("options.scrobble"), translator.t("messages.scrobble_items", count=len(streams)))
 
-    if confirm:
-        top = Toplevel(bg=defaultBg)
+    if confirm == True:
+        top = ttk.Toplevel(bg=defaultBg)
         top.title(translator.t("messages.scrobbling"))
 
-        label = tk.Label(top, text=translator.t("messages.scrobbling"), bg=defaultBg, fg="white", font=("Arial", 10))
+        label = ttk.Label(top, text=translator.t("messages.scrobbling"), font=("Arial", 10), background=defaultBg, foreground="white")
         label.pack(pady=5)
         
         progress = ttk.Progressbar(top, orient="horizontal", length=300, mode="determinate", maximum=len(streams))
         progress.pack(padx=10)
 
-        title_info = tk.Label(top, text="", bg=defaultBg, fg="white", font=("Arial", 10))
+        title_info = ttk.Label(top, text="", font=("Arial", 10), background=defaultBg, foreground="white")
         title_info.pack(pady=5, padx=10)
             
         counter = 0
+        successful_indices = []
+        failed_count = 0
 
-        for stream in streams:
+        for i, stream in enumerate(streams):
             counter+= 1
-                
-            unix_timestamp = int(time.mktime(datetime.now().timetuple()))
-                
+
+            timestamp = datetime.strptime(stream['timestamp'], '%Y-%m-%d %H:%M:%S')
+            unix_timestamp = int(time.mktime(timestamp.timetuple()))
+
             try:
                 title_info.config(text=translator.t("messages.track_info", artist=stream["artist"], track=stream["track"]))
-                time.sleep(1.0)
+                time.sleep(0.5)
                 lastfm.network.scrobble(artist=stream["artist"], title=stream["track"], timestamp=unix_timestamp)
+                successful_indices.append(i)
                 progress['value'] = counter
                 top.update()
             except pylast.WSError:
-                messagebox.showerror(translator.t("messages.error"), translator.t("messages.error_scrobbling"))
+                failed_count += 1
+                progress['value'] = counter
+                top.update()
 
-        streams_listbox.delete(first=0, last=tk.END)
-        streams = []
-        send_scrobbles_button.config(state="disabled")
-        streams_label.config(text=translator.t("messages.no_file"))
+        for index in reversed(successful_indices):
+            streams.pop(index)
+
+        if len(streams) > 0:
+            process_streams()
+        else:
+            streams_listbox.delete(0, tk.END)
+            streams_label.config(text=translator.t("messages.no_file"))
+            send_scrobbles_button.config(state="disabled")
+
         top.destroy()
-        messagebox.showinfo(translator.t("messages.success"), translator.t("messages.success_scrobbling")) 
+
+        if failed_count > 0:
+            messagebox.showwarning(translator.t("messages.error"), translator.t("messages.success_with_errors", count=failed_count))
+        if len(successful_indices) > 0:
+            messagebox.showinfo(translator.t("messages.success"), translator.t("messages.success_scrobbling"))
     else:
         return
 
@@ -99,6 +124,23 @@ def process_streams():
 
     send_scrobbles_button.config(state="normal" if len(streams) > 0 else "disabled")
 
+def check_for_updates(user_request: bool):
+    current_version = about_dialog.version
+    response = requests.get("https://api.github.com/repos/luisgbr1el/last-batch/releases/latest")
+    latest_version = response.json()["name"]
+
+    if current_version != latest_version:
+        confirm = messagebox.askyesno(translator.t("settings.update"), translator.t("messages.update_available"))
+
+        if confirm == True:
+            webbrowser.open("https://github.com/luisgbr1el/last-batch/releases/latest")
+        else:
+            return
+    else:
+        if user_request == True:
+            messagebox.showinfo(translator.t("settings.update"), translator.t("messages.no_updates"))
+        return
+
 def refresh():
     global label
     global button
@@ -115,10 +157,10 @@ def refresh():
         widget.destroy()
 
     if not lastfm.is_authenticated():
-        label = tk.Label(root, text=translator.t("messages.not_logged"), bg=defaultBg, fg="white", font=("Arial", 10))
+        label = ttk.Label(root, text=translator.t("messages.not_logged"), font=("Arial", 10), background=defaultBg, foreground="white")
         label.pack(pady=10, padx=10)
 
-        button = tk.Button(root, text=translator.t("options.login"), command=on_authenticate, width=25, bg=defaultBg, fg="white")
+        button = ttk.Button(root, text=translator.t("options.login"), command=on_authenticate, width=25)
         button.pack()
     else:
         if lastfm.network is None:
@@ -128,46 +170,49 @@ def refresh():
                 session_key=configs.get(name="session_key")
             )
 
-        menu = tk.Menu(root)
+        menu = ttk.Menu(root)
         root.config(menu=menu)
 
-        main_menu = tk.Menu(menu, tearoff=0)
+        main_menu = ttk.Menu(menu, tearoff=0)
         menu.add_cascade(label="Last.Batch", menu=main_menu)
         main_menu.add_command(label=translator.t("settings.title"), command=lambda: settings_dialog.open(root, refresh))
         main_menu.add_command(label=translator.t("options.logout"), command=on_disconnect)
         main_menu.add_separator()
         main_menu.add_command(label=translator.t("options.quit"), command=root.quit)
 
-        help_menu = tk.Menu(menu, tearoff=0)
+        help_menu = ttk.Menu(menu, tearoff=0)
         menu.add_cascade(label=translator.t("options.help"), menu=help_menu)
         help_menu.add_command(label=translator.t("options.about"), command=about_dialog.open)
+        help_menu.add_command(label=translator.t("options.check_for_updates"), command=lambda: check_for_updates(user_request=True))
 
-        send_file_label = tk.Label(root, text=translator.t("messages.send_file"), bg=defaultBg, fg="white", font=("Arial", 10, "bold"))
+        send_file_label = ttk.Label(root, text=translator.t("messages.send_file"), font=("Arial", 10, "bold"), background=defaultBg, foreground="white")
         send_file_label.pack(pady=10)
 
-        button = tk.Button(root, text=translator.t("options.send_file"), command=upload_file, width=25, bg=defaultBg, fg="white")
+        button = ttk.Button(root, text=translator.t("options.send_file"), command=upload_file, width=25)
         button.pack()
        
-        streams_label = tk.Label(root, text=translator.t("messages.no_file"), bg=defaultBg, fg="white", font=("Arial", 10))
+        streams_label = ttk.Label(root, text=translator.t("messages.no_file"), font=("Arial", 10), background=defaultBg, foreground="white")
         streams_label.pack(pady=5)
 
-        frame = tk.Frame(root, bg=defaultBg)
+        frame = ttk.Frame(root)
         frame.pack()
 
-        scrollbar = tk.Scrollbar(frame, width=20)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        scrollbar = ttk.Scrollbar(frame)
+        scrollbar.pack(side="right", fill="y")
         
-        streams_listbox = tk.Listbox(frame, bg=defaultBg, fg="white", width=100, height=20, yscrollcommand=scrollbar.set)
-        streams_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
+        streams_listbox = tk.Listbox(frame, width=100, height=20, yscrollcommand=scrollbar.set)
+        streams_listbox.config(background=defaultBg, foreground="white", selectbackground="#375A7F")
+        streams_listbox.pack(side="left", fill="both")
         
         scrollbar.config(command=streams_listbox.yview)
 
-        label = tk.Label(root, text=translator.t("messages.how_to_remove_stream"), bg=defaultBg, fg="white", font=("Arial", 8, "bold"))
+        label = ttk.Label(root, text=translator.t("messages.how_to_remove_stream"), font=("Arial", 8, "bold"), background=defaultBg, foreground="white")
         label.pack(pady=5)
 
-        send_scrobbles_button = tk.Button(root, text=translator.t("options.scrobble"), command=send_scrobbles, width=25, bg=defaultBg, fg="white")
+        send_scrobbles_button = ttk.Button(root, text=translator.t("options.scrobble"), command=send_scrobbles, width=25)
         send_scrobbles_button.config(state="disabled")
         send_scrobbles_button.pack()
+        check_for_updates(user_request=False)
 
 refresh()
 root.mainloop()
