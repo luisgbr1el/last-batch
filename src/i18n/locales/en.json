@@ -3,7 +3,8 @@
         "title": "Settings",
         "language": "Language",
         "version": "Version",
-        "file_format": "Processing file format"
+        "file_format": "Processing file format",
+        "update": "Update"
     },
     "options": {
         "save": "Save",
@@ -13,7 +14,8 @@
         "help": "Help",
         "about": "About",
         "send_file": "Send file",
-        "scrobble": "Scrobble"
+        "scrobble": "Scrobble",
+        "check_for_updates": "Check for updates"
     },
     "messages": {
         "developer": "Developed by luisgbr1el",
@@ -31,6 +33,8 @@
         "not_logged": "You're not authenticated with Last.fm!",
         "playback_history": "Playback history",
         "confirm_logout": "Log out of Last.fm account?",
-        "success_with_errors": "{count} stream(s) failed. The remaining streams stay in the list."
+        "success_with_errors": "{count} stream(s) failed. The remaining streams stay in the list.",
+        "update_available": "Update available! Download the new version?",
+        "no_updates": "No updates available! This is the latest release."
     }
 }

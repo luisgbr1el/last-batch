@@ -9,6 +9,8 @@ from ui import about_dialog, settings_dialog
 import file
 import configs
 from i18n import translator
+import requests
+import webbrowser
 
 translator.load_locale(configs.get("language"))
 
@@ -122,6 +124,23 @@ def process_streams():
 
     send_scrobbles_button.config(state="normal" if len(streams) > 0 else "disabled")
 
+def check_for_updates(user_request: bool):
+    current_version = about_dialog.version
+    response = requests.get("https://api.github.com/repos/luisgbr1el/last-batch/releases/latest")
+    latest_version = response.json()["name"]
+
+    if current_version != latest_version:
+        confirm = messagebox.askyesno(translator.t("settings.update"), translator.t("messages.update_available"))
+
+        if confirm == True:
+            webbrowser.open("https://github.com/luisgbr1el/last-batch/releases/latest")
+        else:
+            return
+    else:
+        if user_request == True:
+            messagebox.showinfo(translator.t("settings.update"), translator.t("messages.no_updates"))
+        return
+
 def refresh():
     global label
     global button
@@ -164,6 +183,7 @@ def refresh():
         help_menu = ttk.Menu(menu, tearoff=0)
         menu.add_cascade(label=translator.t("options.help"), menu=help_menu)
         help_menu.add_command(label=translator.t("options.about"), command=about_dialog.open)
+        help_menu.add_command(label=translator.t("options.check_for_updates"), command=lambda: check_for_updates(user_request=True))
 
         send_file_label = ttk.Label(root, text=translator.t("messages.send_file"), font=("Arial", 10, "bold"), background=defaultBg, foreground="white")
         send_file_label.pack(pady=10)
@@ -192,6 +212,7 @@ def refresh():
         send_scrobbles_button = ttk.Button(root, text=translator.t("options.scrobble"), command=send_scrobbles, width=25)
         send_scrobbles_button.config(state="disabled")
         send_scrobbles_button.pack()
+        check_for_updates(user_request=False)
 
 refresh()
 root.mainloop()
