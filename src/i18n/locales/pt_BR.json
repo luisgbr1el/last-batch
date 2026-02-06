@@ -37,6 +37,7 @@
         "update_available": "Atualização disponível! Baixar a nova versão?",
         "no_updates": "Nenhuma atualização disponível! Essa é a última versão.",
         "error_fetching_track": "Erro ao buscar as músicas no Last.fm! Tente novamente mais tarde.",
-        "fetching": "Buscando..."
+        "fetching": "Buscando...",
+        "error_checking_updates": "Não foi possível verificar se há atualizações agora. Tente novamente mais tarde."
     }
 }
