@@ -11,6 +11,7 @@ import configs
 from i18n import translator
 import requests
 import webbrowser
+import streams_list
 
 translator.load_locale(configs.get("language"))
 
@@ -65,9 +66,9 @@ def send_scrobbles():
             unix_timestamp = int(time.mktime(timestamp.timetuple()))
 
             try:
-                title_info.config(text=translator.t("messages.track_info", artist=stream["artist"], track=stream["track"]))
+                title_info.config(text=translator.t("messages.track_info", artist=stream["artist"], track=stream["title"]))
                 time.sleep(0.5)
-                lastfm.network.scrobble(artist=stream["artist"], title=stream["track"], timestamp=unix_timestamp)
+                lastfm.network.scrobble(artist=stream["artist"], title=stream["title"], timestamp=unix_timestamp)
                 successful_indices.append(i)
                 progress['value'] = counter
                 top.update()
@@ -82,7 +83,6 @@ def send_scrobbles():
         if len(streams) > 0:
             process_streams()
         else:
-            streams_listbox.delete(0, tk.END)
             streams_label.config(text=translator.t("messages.no_file"))
             send_scrobbles_button.config(state="disabled")
 
@@ -102,25 +102,17 @@ def upload_file():
         streams = file.process(file_content)
         process_streams()
 
-def remove_selected():
-    global streams
-    selection = streams_listbox.curselection()
-    if selection:
-        index = selection[0]
-        streams.pop(index)
-        streams_listbox.delete(index)
-        streams_label.config(text=translator.t("messages.streams_read", count=len(streams)))
-        send_scrobbles_button.config(state="normal" if len(streams) > 0 else "disabled")
-
 def process_streams():
-    streams_label.config(text=translator.t("messages.streams_read", count=len(streams)))
+    for widget in streams_frame.winfo_children():
+        widget.destroy()
     
-    streams_listbox.delete(0, tk.END)
+    streams_label.config(text=translator.t("messages.streams_read", count=len(streams)))
+
+    index = 0
     
     for stream in streams:
-        streams_listbox.insert(tk.END, f"{stream["artist"]} - {stream["track"]} ({stream["timestamp"]})")
-
-    streams_listbox.bind('<Delete>', lambda e: remove_selected())
+        index += 1
+        streams_list.add(frame=streams_frame, track=stream, index=index, streams=streams, refresh_callback=process_streams)
 
     send_scrobbles_button.config(state="normal" if len(streams) > 0 else "disabled")
 
@@ -145,13 +137,13 @@ def refresh():
     global label
     global button
     global streams_label
-    global streams_listbox
     global send_scrobbles_button
     global disconnect_button
     global send_file_label
     global scrollbar
     global frame
     global menu
+    global streams_frame
 
     for widget in root.winfo_children():
         widget.destroy()
@@ -197,17 +189,19 @@ def refresh():
         frame = ttk.Frame(root)
         frame.pack()
 
-        scrollbar = ttk.Scrollbar(frame)
+        canvas = tk.Canvas(frame, width=700, height=400)
+        canvas.pack(pady=5)
+        scrollbar = ttk.Scrollbar(frame, orient="vertical", command=canvas.yview)
+        
+        streams_frame = ttk.Frame(canvas)
+        
+        canvas.create_window((0, 0), window=streams_frame, anchor="nw", width=700)
+        canvas.configure(yscrollcommand=scrollbar.set)
+        
+        canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
         
-        streams_listbox = tk.Listbox(frame, width=100, height=20, yscrollcommand=scrollbar.set)
-        streams_listbox.config(background=defaultBg, foreground="white", selectbackground="#375A7F")
-        streams_listbox.pack(side="left", fill="both")
-        
-        scrollbar.config(command=streams_listbox.yview)
-
-        label = ttk.Label(root, text=translator.t("messages.how_to_remove_stream"), font=("Arial", 8, "bold"), background=defaultBg, foreground="white")
-        label.pack(pady=5)
+        streams_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
         send_scrobbles_button = ttk.Button(root, text=translator.t("options.scrobble"), command=send_scrobbles, width=25)
         send_scrobbles_button.config(state="disabled")
