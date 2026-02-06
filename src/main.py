@@ -117,20 +117,25 @@ def process_streams():
     send_scrobbles_button.config(state="normal" if len(streams) > 0 else "disabled")
 
 def check_for_updates(user_request: bool):
-    current_version = about_dialog.version
-    response = requests.get("https://api.github.com/repos/luisgbr1el/last-batch/releases/latest")
-    latest_version = response.json()["name"]
+    try:
+        current_version = about_dialog.version
+        response = requests.get("https://api.github.com/repos/luisgbr1el/last-batch/releases/latest")
+        latest_version = response.json()["name"]
 
-    if current_version != latest_version:
-        confirm = messagebox.askyesno(translator.t("settings.update"), translator.t("messages.update_available"))
+        if current_version != latest_version:
+            confirm = messagebox.askyesno(translator.t("settings.update"), translator.t("messages.update_available"))
 
-        if confirm == True:
-            webbrowser.open("https://github.com/luisgbr1el/last-batch/releases/latest")
+            if confirm == True:
+                webbrowser.open("https://github.com/luisgbr1el/last-batch/releases/latest")
         else:
-            return
-    else:
+            if user_request == True:
+                messagebox.showinfo(translator.t("settings.update"), translator.t("messages.no_updates"))
+
+        return
+    except:
         if user_request == True:
-            messagebox.showinfo(translator.t("settings.update"), translator.t("messages.no_updates"))
+            messagebox.showerror(translator.t("messages.error"), translator.t("messages.error_checking_updates"))
+            
         return
 
 def refresh():
