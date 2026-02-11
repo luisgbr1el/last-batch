@@ -11,17 +11,26 @@ import configs
 from i18n import translator
 import requests
 import webbrowser
+import sys
+import os
 import streams_list
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 translator.load_locale(configs.get("language"))
 
 defaultBg = "#212120"
-root = tk.Tk(screenName="main", baseName="main", className="main")
+
+root = ttk.Window()
 ttk.Style("darkly")
 root.title("Last.Batch")
-# width = root.winfo_screenwidth() 
-# height = root.winfo_screenheight()
-# root.geometry("%dx%d" % (width, height))
+
 root.config(bg=defaultBg, pady=10)
 root.resizable(False, False)
 
@@ -119,7 +128,7 @@ def process_streams():
 def check_for_updates(user_request: bool):
     try:
         current_version = about_dialog.version
-        response = requests.get("https://api.github.com/repos/luisgbr1el/last-batch/releases/latest")
+        response = requests.get("https://api.github.com/repos/luisgbr1el/last-batch/releases/latest", timeout=10)
         latest_version = response.json()["name"]
 
         if current_version != latest_version:
