@@ -6,7 +6,7 @@ a = Analysis(
     binaries=[],
     datas=[
         ('.env', '.'), 
-        ('src/i18n/locales/*.json', 'i18n/locales')  # CORREÇÃO: Destino agora é i18n/locales
+        ('src/i18n/locales/*.json', 'i18n/locales')
     ],
     hiddenimports=[
         'lastfm', 
