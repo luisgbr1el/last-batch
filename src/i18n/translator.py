@@ -5,10 +5,9 @@ from typing import Dict
 
 def get_base_path():
     if getattr(sys, 'frozen', False):
-        base_path = sys._MEIPASS
+        return sys._MEIPASS
     else:
-        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    return base_path
+        return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 LOCALES_DIR = os.path.join(get_base_path(), "i18n", "locales")
 current_locale = "en"
@@ -17,8 +16,12 @@ translations: Dict[str, any] = {}
 def _load_json_file(locale_code: str) -> Dict:
     locale_file = os.path.join(LOCALES_DIR, f"{locale_code}.json")
     if os.path.exists(locale_file):
-        with open(locale_file, "r", encoding="utf-8") as f:
-            return json.load(f)
+        try:
+            with open(locale_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Erro ao ler arquivo de tradução: {e}")
+            return {}
     return {}
 
 def load_locale(locale: str):
@@ -44,24 +47,24 @@ def load_locale(locale: str):
             current_locale = "en"
             
     except Exception:
-        try:
-            translations = _load_json_file("en")
-            current_locale = "en"
-        except:
-            translations = {}
-            current_locale = "en"
+        translations = _load_json_file("en")
+        current_locale = "en"
 
 def t(key: str, **kwargs) -> str:
     keys = key.split(".")
     value = translations
     
     for k in keys:
-        value = value.get(k, key)
-        if not isinstance(value, dict):
+        if isinstance(value, dict):
+            value = value.get(k, key)
+        else:
             break
     
     if isinstance(value, str) and kwargs:
-        return value.format(**kwargs)
+        try:
+            return value.format(**kwargs)
+        except KeyError:
+            return value
     
     return value if isinstance(value, str) else key
 

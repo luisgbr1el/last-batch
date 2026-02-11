@@ -35,6 +35,7 @@
         "confirm_logout": "Log out of Last.fm account?",
         "success_with_errors": "{count} stream(s) failed. The remaining streams stay in the list.",
         "update_available": "Update available! Download the new version?",
-        "no_updates": "No updates available! This is the latest release."
+        "no_updates": "No updates available! This is the latest release.",
+        "error_updating": "Error updating. Try again later."
     }
 }

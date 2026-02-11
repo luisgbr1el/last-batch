@@ -11,16 +11,25 @@ import configs
 from i18n import translator
 import requests
 import webbrowser
+import sys
+import os
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 translator.load_locale(configs.get("language"))
 
 defaultBg = "#212120"
-root = tk.Tk(screenName="main", baseName="main", className="main")
+
+root = ttk.Window()
 ttk.Style("darkly")
 root.title("Last.Batch")
-# width = root.winfo_screenwidth() 
-# height = root.winfo_screenheight()
-# root.geometry("%dx%d" % (width, height))
+
 root.config(bg=defaultBg, pady=10)
 root.resizable(False, False)
 
@@ -118,7 +127,7 @@ def process_streams():
     streams_listbox.delete(0, tk.END)
     
     for stream in streams:
-        streams_listbox.insert(tk.END, f"{stream["artist"]} - {stream["track"]} ({stream["timestamp"]})")
+        streams_listbox.insert(tk.END, f"{stream['artist']} - {stream['track']} ({stream['timestamp']})")
 
     streams_listbox.bind('<Delete>', lambda e: remove_selected())
 
@@ -126,32 +135,28 @@ def process_streams():
 
 def check_for_updates(user_request: bool):
     current_version = about_dialog.version
-    response = requests.get("https://api.github.com/repos/luisgbr1el/last-batch/releases/latest")
-    latest_version = response.json()["name"]
+    try:
+        response = requests.get("https://api.github.com/repos/luisgbr1el/last-batch/releases/latest", timeout=10)
+        latest_version = response.json()["name"]
 
-    if current_version != latest_version:
-        confirm = messagebox.askyesno(translator.t("settings.update"), translator.t("messages.update_available"))
+        if current_version != latest_version:
+            confirm = messagebox.askyesno(translator.t("settings.update"), translator.t("messages.update_available"))
 
-        if confirm == True:
-            webbrowser.open("https://github.com/luisgbr1el/last-batch/releases/latest")
+            if confirm == True:
+                webbrowser.open("https://github.com/luisgbr1el/last-batch/releases/latest")
+            else:
+                return
         else:
+            if user_request == True:
+                messagebox.showinfo(translator.t("settings.update"), translator.t("messages.no_updates"))
             return
-    else:
-        if user_request == True:
-            messagebox.showinfo(translator.t("settings.update"), translator.t("messages.no_updates"))
-        return
+    except Exception:
+        if user_request:
+            messagebox.showerror(translator.t("messages.error"), translator.t("messages.error_updating"))
 
 def refresh():
-    global label
-    global button
-    global streams_label
-    global streams_listbox
-    global send_scrobbles_button
-    global disconnect_button
-    global send_file_label
-    global scrollbar
-    global frame
-    global menu
+    global label, button, streams_label, streams_listbox, send_scrobbles_button
+    global disconnect_button, send_file_label, scrollbar, frame, menu
 
     for widget in root.winfo_children():
         widget.destroy()
