@@ -4,8 +4,20 @@ a = Analysis(
     ['src/main.py'],
     pathex=['src'],
     binaries=[],
-    datas=[('.env', '.'), ('src/i18n/locales/*.json', 'i18n/locales')],
-    hiddenimports=['lastfm', 'configs', 'file', 'ui.about_dialog', 'ui.settings_dialog', 'i18n.translator'],
+    datas=[
+        ('.env', '.'), 
+        ('src/i18n/locales/*.json', 'i18n/locales')  # CORREÇÃO: Destino agora é i18n/locales
+    ],
+    hiddenimports=[
+        'lastfm', 
+        'configs', 
+        'file', 
+        'ui.about_dialog', 
+        'ui.settings_dialog', 
+        'i18n.translator',
+        'ttkbootstrap',
+        'PIL._tkinter_finder'
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -28,7 +40,7 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,
+    console=False, 
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
