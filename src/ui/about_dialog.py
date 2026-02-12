@@ -3,7 +3,8 @@ import webbrowser
 from i18n import translator
 
 defaultBg = "#212120"
-version = "1.2.0"
+version = [1, 2, 0]
+versionText = f"{version[0]}.{version[1]}.{version[2]}"
 
 def open():
     top = ttk.Toplevel(bg=defaultBg)
@@ -13,7 +14,7 @@ def open():
     top.grab_set()
     top.transient()
 
-    label = ttk.Label(top, text=f"{translator.t("settings.version")}: {version}\n{translator.t("messages.developer")}", background=defaultBg, foreground="white", font=("Arial", 10))
+    label = ttk.Label(top, text=f"{translator.t("settings.version")}: {versionText}\n{translator.t("messages.developer")}", background=defaultBg, foreground="white", font=("Arial", 10))
     label.pack(padx=10, pady=10)
 
     button = ttk.Button(top, text="GitHub", command=lambda: webbrowser.open("https://github.com/luisgbr1el/last-batch"), width=25)
