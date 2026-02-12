@@ -125,13 +125,18 @@ def process_streams():
 
     send_scrobbles_button.config(state="normal" if len(streams) > 0 else "disabled")
 
+def parse_version(name: str) -> list[int]:
+    version = name.split(".")
+    version = [int(number) for number in version]
+    return version
+
 def check_for_updates(user_request: bool):
     try:
         current_version = about_dialog.version
         response = requests.get("https://api.github.com/repos/luisgbr1el/last-batch/releases/latest", timeout=10)
-        latest_version = response.json()["name"]
+        latest_version = parse_version(response.json()["name"])
 
-        if current_version != latest_version:
+        if latest_version > current_version:
             confirm = messagebox.askyesno(translator.t("settings.update"), translator.t("messages.update_available"))
 
             if confirm == True:
